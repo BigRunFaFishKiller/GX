@@ -36,6 +36,13 @@ func New() *Engine {
 	return engine
 }
 
+//默认实例，使用了panic恢复中间件
+func Default() *Engine {
+	engine := New()
+	engine.Use(Recovery())
+	return engine
+}
+
 //分组
 func (group *RouterGroup) Group(prefix string) *RouterGroup {
 	newGroup := &RouterGroup{
