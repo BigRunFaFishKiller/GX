@@ -81,8 +81,11 @@ func (r *Router) Handle(c *Context) {
 	if n != nil {
 		c.Params = params
 		key := c.Method + "-" + n.pattern
-		r.handlers[key](c)
+		//将处理器方法放入HandlerFunc切片
+		c.Handlers = append(c.Handlers, r.handlers[key])
 	} else {
 		c.String(http.StatusNotFound, "404 NOT FOUND: %s", c.Path)
 	}
+	//开始时执行中间件，中间件的最后一个方法为处理器方法
+	c.Next()
 }

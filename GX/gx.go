@@ -4,6 +4,7 @@ package GX
 
 import (
 	"net/http"
+	"strings"
 )
 
 type HandlerFunc func(c *Context)
@@ -46,6 +47,11 @@ func (group *RouterGroup) Group(prefix string) *RouterGroup {
 	return newGroup
 }
 
+//将中间件添加到对应的路由中
+func (group *RouterGroup) Use(middlewares ...HandlerFunc) {
+	group.middleware = append(group.middleware, middlewares...)
+}
+
 //给引擎添加路由添加处理器的通用的方法
 func (group *RouterGroup) addRouter(method string, pattern string, handler HandlerFunc) {
 	pattern = group.prefix + pattern
@@ -74,7 +80,16 @@ func (group *RouterGroup) PUT(pattern string, handler HandlerFunc) {
 
 //引擎实现handle接口
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var middleware []HandlerFunc
+	//根据路由从路由分组中查找可以使用的中间件
+	for _, group := range e.groups {
+		if strings.HasPrefix(r.URL.Path, group.prefix) {
+			middleware = append(middleware, group.middleware...)
+		}
+	}
 	context := newContext(w, r)
+	//将可以使用的中间件放入上下文
+	context.Handlers = middleware
 	e.router.Handle(context)
 }
 

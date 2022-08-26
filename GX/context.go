@@ -22,6 +22,9 @@ type Context struct {
 	StatusCode int
 	//请求路径中的参数
 	Params map[string]string
+	//中间件
+	Handlers []HandlerFunc
+	index    int //记录中间索引
 }
 
 //构造Context
@@ -31,6 +34,16 @@ func newContext(w http.ResponseWriter, r *http.Request) *Context {
 		Req:    r,
 		Path:   r.URL.Path,
 		Method: r.Method,
+		index:  -1,
+	}
+}
+
+//放行当前中间件，执行下一个中间件
+func (c *Context) Next() {
+	c.index++
+	num := len(c.Handlers)
+	for ; c.index < num; c.index++ {
+		c.Handlers[c.index](c)
 	}
 }
 
