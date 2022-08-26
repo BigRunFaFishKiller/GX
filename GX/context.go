@@ -20,6 +20,8 @@ type Context struct {
 	Path       string
 	Method     string
 	StatusCode int
+	//请求路径中的参数
+	Params map[string]string
 }
 
 //构造Context
@@ -30,6 +32,12 @@ func newContext(w http.ResponseWriter, r *http.Request) *Context {
 		Path:   r.URL.Path,
 		Method: r.Method,
 	}
+}
+
+//获取动态路由中的参数
+func (c *Context) Param(key string) string {
+	value, _ := c.Params[key]
+	return value
 }
 
 //获取POST请求表单参数
