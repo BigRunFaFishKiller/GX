@@ -53,6 +53,7 @@ func (n *node) insert(pattern string, parts []string, height int) {
 	child.insert(pattern, parts, height+1)
 }
 
+//根据part即从请求路径中分割出的节点切片中，查找最末端的pattern不为空节点
 func (n *node) search(parts []string, height int) *node {
 	if len(parts) == height || strings.HasPrefix(n.part, "*") {
 		if n.pattern == "" {
