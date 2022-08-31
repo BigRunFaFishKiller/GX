@@ -86,6 +86,6 @@ func (r *Router) Handle(c *Context) {
 	} else {
 		c.String(http.StatusNotFound, "404 NOT FOUND: %s", c.Path)
 	}
-	//开始时执行中间件，中间件的最后一个方法为处理器方法
+	//开始执行中间件，中间件的最后一个方法为处理器方法
 	c.Next()
 }

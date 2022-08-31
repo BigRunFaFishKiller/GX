@@ -85,7 +85,7 @@ func (group *RouterGroup) PUT(pattern string, handler HandlerFunc) {
 	group.addRouter("PUT", pattern, handler)
 }
 
-//引擎实现handle接口
+//引擎实现handler接口
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var middleware []HandlerFunc
 	//根据路由从路由分组中查找可以使用的中间件
